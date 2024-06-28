@@ -1,0 +1,48 @@
+// mail setup
+  let transporter = nodemailer.createTransport({
+    host: "mail.ahydratech.com",
+    port: 465,
+    secure: true, // true for 465, false for other ports
+    auth: {
+      user: "noreply@ahydratech.com", // generated ethereal user
+      pass: "WuNr2]fpg(D,", // generated ethereal password
+    },
+  });
+
+
+
+//   Mail Data
+  const mailOptions = {
+    from: `"Saywa" <${process.env.NO_REPLY}>`,
+    to: req.ody,
+    subject: "Saywa Limo Driver Assignment Confirmation",
+    html: `<div style="padding: 20px;">
+      <p style="text-align: left;">Dear user,</p>
+      <p style="text-align: left;">We hope this message finds you well. Thank you for choosing Saywa Limo for your upcoming trip. We are delighted to inform you that a professional driver has been assigned to cater to your transportation needs.</p>
+      <p><table style="border-collapse: collapse; width: 100%;" border="1">
+      <tbody>
+      <tr>
+      <td><strong>Driver's Name</strong></td>
+      <td><strong>Contact Number</strong></td>
+      <td><strong>Vehicle Information</strong></td>
+      <td><strong>License Plate Number</strong></td>
+      </tr>
+      <tr>
+      <td><strong>&nbsp;</strong>${driverName}</td>
+      <td><strong>&nbsp;</strong>${driverContactNo}</td>
+      <td><strong>&nbsp;</strong>${vehicleNo}</td>
+      <td><strong>&nbsp;</strong>${vehicleType}</td>
+      </tr>
+      </tbody>
+      </table>
+      </p>
+      <p>Should you have any specific requirements or if there are changes to your travel plans, please feel free to contact our customer support at [Customer Support Email/Phone].</p>
+      <p>Your satisfaction and safety are our top priorities, and we assure you that our driver will provide you with a comfortable and secure journey.</p>
+      <p>Thank you for choosing Saywa Limo. We look forward to serving you and ensuring a seamless travel experience.</p>
+      <p>Best regards,</br>Saywa Limo Support Team</p>
+    </div>`,
+  };
+
+
+//   Send Action
+  transporter.(mailOptions);

@@ -1,0 +1,2 @@
+### Create ADmin User
+POST http://192.168.29.227:9007/api/create_admin_user

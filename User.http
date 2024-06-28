@@ -1,0 +1,58 @@
+### User Registration Firebase Signup
+POST http://192.168.29.227:9007/api/customers/signup_with_email
+content-type: application/json
+{
+    "uid":"Firebase UID",
+    "fullName":"fullName",
+    "email":"email",
+    "contactNumber":"contactNumber",
+}
+
+
+### Check Email Exists
+POST http://192.168.29.227:9007/api/customers/checkexist_db
+content-type: application/json
+{
+    "email":"User Email",
+}
+
+
+### Signup With Google
+POST http://192.168.29.227:9007/api/customers/signup_with_google
+content-type: application/json
+{
+    "fullName":"fullName",
+    "email":"email",
+    "phoneNumber":"phoneNumber",
+}
+
+### Update Phone No
+POST http://192.168.29.227:9007/api/customers/update_user_phone
+content-type: application/json
+{
+    "uid":"Firebase UID",
+    "phone":"Updated Phone",
+}
+### Update/Create User Signature
+POST http://192.168.29.227:9007/api/customers/new_signature
+content-type: multipart/form-data
+{
+    "customer_id":"Firebase UID",
+    "signature":"Base 64 Signature",   
+}
+ 
+
+### Update/Create User User
+POST http://192.168.29.227:9007/api/customers/update_customer_profile
+content-type: multipart/form-data
+{
+    "fullName":"fullName",
+    "email":"email",
+    "contact_no":"contact_no",
+    "addressLine1":"addressLine1",
+    "addressLine2":"addressLine2",
+    "addressLine3":"addressLine3",
+    "zipCode":"zipCode",
+}
+ 
+

@@ -1,0 +1,11 @@
+{
+  "installed": {
+    "client_id": "462081810957-gffj0d5jamve36orc67e5k3nf8ntf74r.apps.googleusercontent.com",
+    "project_id": "saywa-limo",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "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",
+    "redirect_uris": ["http://localhost"]
+  }
+}
