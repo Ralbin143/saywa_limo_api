@@ -5,9 +5,10 @@ const {
   getActivePackages,
   getSinglePackage,
 } = require("../controllers/packages/PackageController");
+const { uploadPhoto } = require("../middlewares/UploadMiddleware");
 const router = express.Router();
 
-router.post("/new", addPackage);
+router.post("/new", uploadPhoto.array("images"), addPackage);
 router.get("/", getAllPackage);
 
 router.post("/get-active", getActivePackages);

@@ -3,24 +3,30 @@ const PACKAGES = require("../../models/Packages");
 
 const addPackage = async (req, res) => {
   try {
+    let imagesList = [];
+    req.files.map((file) => {
+      imagesList.push(file.filename);
+    });
+
     const {
       PackageName,
-      TourLength,
       TotalPerson,
       selectedStatus,
       Description,
       eventType,
       vehicles,
+      TourLength, // Destructure TourLength from req.body
     } = req.body;
 
     const newPackages = new PACKAGES({
       PackageName,
+      PackageImage: imagesList, // Assign imagesList to PackageImage
       TourLength,
       TotalPerson,
       selectedStatus,
       Description,
       eventType,
-      vehicles,
+      vehicles: JSON.parse(vehicles),
     });
 
     await newPackages.save();
@@ -31,6 +37,7 @@ const addPackage = async (req, res) => {
     return res.status(500).json(error);
   }
 };
+
 const getAllPackage = async (req, res) => {
   try {
     const result = await PACKAGES.find();
@@ -74,9 +81,6 @@ const getSinglePackage = async (req, res) => {
     const result = await PACKAGES.find(query);
     return res.status(200).json(result);
   } catch (error) {
-    console.log("====================================");
-    console.log(error);
-    console.log("====================================");
     return res.status(500).json(error);
   }
 };

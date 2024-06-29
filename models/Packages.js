@@ -5,6 +5,10 @@ const PackageSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  PackageImage: {
+    type: Array,
+    required: false,
+  },
   TourLength: {
     type: String,
     required: false,
