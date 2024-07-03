@@ -164,7 +164,7 @@ router.post("/webhook", async (req, res) => {
       paymentReference: paymentIntentId,
       nightCharge: invoiceData.nightCharge,
       walletAmount: invoiceData.voucherAmount,
-      referalCode:invoiceData.voucherCode
+      referalCode: invoiceData.voucherCode,
     });
 
     if (

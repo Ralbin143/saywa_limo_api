@@ -1,11 +1,23 @@
 const { default: mongoose } = require("mongoose");
 const PACKAGES = require("../../models/Packages");
+const fs = require("fs");
+const { cloudinaryUploadImg } = require("../../utils/Cloudinary");
+const cloudinary = require("cloudinary").v2;
 
 const addPackage = async (req, res) => {
   try {
-    let imagesList = [];
-    req.files.map((file) => {
-      imagesList.push(file.filename);
+    const uploader = (path) => cloudinaryUploadImg(path, "images");
+    const urls = [];
+    const files = req.files;
+
+    for (const file of files) {
+      const { path } = file;
+      const newpath = await uploader(path);
+      urls.push(newpath);
+      fs.unlinkSync(path);
+    }
+    const images = urls.map((file) => {
+      return file;
     });
 
     const {
@@ -20,7 +32,7 @@ const addPackage = async (req, res) => {
 
     const newPackages = new PACKAGES({
       PackageName,
-      PackageImage: imagesList, // Assign imagesList to PackageImage
+      PackageImage: images, // Assign imagesList to PackageImage
       TourLength,
       TotalPerson,
       selectedStatus,
@@ -52,7 +64,7 @@ const getActivePackages = async (req, res) => {
     const query = {
       status: "Active",
     };
-    const result = await PACKAGES.find();
+    const result = await PACKAGES.find(query);
     return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json(error);
@@ -85,9 +97,31 @@ const getSinglePackage = async (req, res) => {
   }
 };
 
+const togglePackageStatus = async (req, res) => {
+  try {
+    const { id, status } = req.body;
+
+    const query = {
+      _id: id,
+    };
+    const data = {
+      $set: {
+        status: status,
+      },
+    };
+
+    await PACKAGES.updateOne(query, data);
+    const result = await PACKAGES.find();
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
 module.exports = {
   getAllPackage,
   addPackage,
   getActivePackages,
   getSinglePackage,
+  togglePackageStatus,
 };
