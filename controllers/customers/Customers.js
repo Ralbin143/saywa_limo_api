@@ -365,7 +365,12 @@ const deleteUser = async (req, res) => {
       customerStatus: "inactive",
     };
     await Customers.updateOne(query, data);
-    return res.status(200).json([]);
+    const result = await Customers.find().limit(10);
+    const datac = {
+      data: result,
+      total: 10,
+    };
+    return res.status(200).json(datac);
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
   }

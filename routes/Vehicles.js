@@ -12,6 +12,10 @@ const {
   getVehicleList,
   getSingleVehicle,
   updateVehicle,
+  updateBaseDistance,
+  updateUnitPice,
+  updatePriceOrDistance,
+  liveSearch,
 } = require("../controllers/vehicles/Vehicles");
 const Vehicles = require("../models/Vehicles");
 
@@ -104,5 +108,10 @@ router.get("/vehicle-count", async (req, res) => {
   const ccc = await vehicles.find();
   return res.status(200).json({ count: ccc.length });
 });
+
+router.post("/update-base-distance", updateBaseDistance);
+router.post("/update-distance-unit-price", updateUnitPice);
+router.post("/update-price-distance", updatePriceOrDistance);
+router.post("/live-search", liveSearch);
 
 module.exports = router;

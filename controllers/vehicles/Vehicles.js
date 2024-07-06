@@ -119,10 +119,115 @@ const updateVehicle = asyncHandler(async (req, res) => {
     });
 });
 
+const updateUnitPice = async (req, res) => {
+  try {
+    const { price, type } = req.body;
+
+    if (typeof price !== "number" || price <= 0) {
+      return res.status(400).json({ error: "Invalid price value" });
+    }
+
+    // Fetch all vehicles
+    const vehiclesList = await vehicles.find();
+
+    if (vehiclesList.length === 0) {
+      return res.status(404).json({ error: "No vehicles found" });
+    }
+
+    // Update each vehicle's pricePerUnitDistance individually
+    for (const vehicle of vehiclesList) {
+      const currentPricePerUnitDistance = vehicle.pricePerUnitDistance;
+      let updatedPricePerUnitDistance;
+
+      if (type === "Increase") {
+        // Increase the price by percentage
+        const newPricePerUnitDistance =
+          (currentPricePerUnitDistance * price) / 100;
+        updatedPricePerUnitDistance =
+          parseFloat(currentPricePerUnitDistance) +
+          parseFloat(newPricePerUnitDistance);
+      } else if (type === "Decrease") {
+        // Decrease the price by percentage
+        const newPricePerUnitDistance =
+          (currentPricePerUnitDistance * price) / 100;
+        updatedPricePerUnitDistance =
+          parseFloat(currentPricePerUnitDistance) -
+          parseFloat(newPricePerUnitDistance);
+      } else {
+        return res.status(400).json({ error: "Invalid type value" });
+      }
+
+      await vehicles.updateOne(
+        { _id: vehicle._id },
+        { $set: { pricePerUnitDistance: updatedPricePerUnitDistance } }
+      );
+    }
+
+    const result = await vehicles.find();
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("Error updating unit price:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const updateBaseDistance = async (req, res) => {
+  try {
+    const { miles } = req.body;
+    const data = { $set: { baseDistance: miles } };
+    await vehicles.updateMany({}, data);
+    const result = await vehicles.find();
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
+const updatePriceOrDistance = async (req, res) => {
+  try {
+    const { _id, baseDistance, pricePerUnitDistance } = req.body;
+    console.log(req.body);
+    const query = { _id };
+    const data = {
+      $set: {
+        baseDistance: baseDistance,
+        pricePerUnitDistance: pricePerUnitDistance,
+      },
+    };
+    const bbb = await vehicles.updateMany(query, data);
+
+    console.log(bbb);
+    const result = await vehicles.find();
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
+const liveSearch = async (req, res) => {
+  try {
+    const { searchKey } = req.body;
+
+    const query = {
+      vehicleName: { $regex: searchKey, $options: "i" },
+    };
+
+    const result = await vehicles.find(query);
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
 module.exports = {
   addVehicle,
   getVehicle,
   getVehicleList,
   getSingleVehicle,
   updateVehicle,
+  updateBaseDistance,
+  updateUnitPice,
+  updatePriceOrDistance,
+  liveSearch,
 };

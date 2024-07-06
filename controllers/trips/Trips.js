@@ -25,6 +25,8 @@ const tripCount = asyncHandler(async (req, res) => {
 const newTripPayment = asyncHandler(async (req, res) => {
   const CLIENT_URL = process.env.CLIENT_URL;
 
+  console.log(req.body);
+
   const zeroPad = (num, places) => String(num).padStart(places, "0");
   const tripCount = (await Trips.find()).length;
 
