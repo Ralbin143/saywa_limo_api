@@ -92,7 +92,7 @@ const newTripPayment = asyncHandler(async (req, res) => {
         tripOccasion: req.body.tripOccasion,
         tripOccasionDetails: req.body.tripOccasionDetails,
         totalKms: req.body.totalKms,
-        stops: req.body.stops,
+        stops: JSON.stringify(req.body.stops),
         scheduleDate: req.body.scheduleDate,
         scheduleTime: req.body.scheduleTime,
         rideType: req.body.rideType,
@@ -1838,6 +1838,9 @@ const updateTripStatus = asyncHandler(async (req, res) => {
       const custuid = await REFERAL.find({
         referal_code: customer[0].referalCode,
       });
+
+      console.log(custuid);
+
       await Customers.updateOne(
         { user_id: custuid[0].user_id },
         { $set: { $inc: { wallet_balance: 25 } } }
@@ -1982,8 +1985,8 @@ const generateInvoice = async (customer, tripData, custData) => {
     .text("877-206-0780", 55, 118)
 
     .fontSize(10)
-    .text("Seattle", 200, 65, { align: "right" })
-    .text("US", 200, 80, { align: "right" })
+    // .text("Seattle", 200, 65, { align: "right" })
+    // .text("US", 200, 80, { align: "right" })
     .moveDown();
 
   doc.fillColor("#444444").fontSize(20).text("Invoice", 50, 160);
@@ -3029,8 +3032,8 @@ const downloadInvoice = async (req, res) => {
     .text("877-206-0780", 55, 144)
 
     .fontSize(10)
-    .text("Seattle", 200, 105, { align: "right" })
-    .text("US", 200, 120, { align: "right" })
+    // .text("Seattle", 200, 105, { align: "right" })
+    // .text("US", 200, 120, { align: "right" })
     .moveDown();
 
   doc

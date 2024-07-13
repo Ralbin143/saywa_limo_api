@@ -21,27 +21,49 @@ const addPackage = async (req, res) => {
     });
 
     const {
+      id,
       PackageName,
       TotalPerson,
       selectedStatus,
       Description,
       eventType,
       vehicles,
-      TourLength, // Destructure TourLength from req.body
+      TourLength,
     } = req.body;
 
-    const newPackages = new PACKAGES({
-      PackageName,
-      PackageImage: images, // Assign imagesList to PackageImage
-      TourLength,
-      TotalPerson,
-      selectedStatus,
-      Description,
-      eventType,
-      vehicles: JSON.parse(vehicles),
-    });
+    console.log(eventType);
 
-    await newPackages.save();
+    let packageData;
+    if (id) {
+      packageData = await PACKAGES.findByIdAndUpdate(
+        id,
+        {
+          PackageName,
+          PackageImage: images,
+          TourLength,
+          TotalPerson,
+          selectedStatus,
+          Description,
+          eventType: JSON.parse(eventType),
+          vehicles: JSON.parse(vehicles),
+        },
+        { new: true }
+      );
+    } else {
+      packageData = new PACKAGES({
+        PackageName,
+        PackageImage: images,
+        TourLength,
+        TotalPerson,
+        selectedStatus,
+        Description,
+        eventType: JSON.parse(eventType),
+        vehicles: JSON.parse(vehicles),
+      });
+
+      await packageData.save();
+    }
+
     const result = await PACKAGES.find();
     return res.status(200).json(result);
   } catch (error) {
@@ -118,10 +140,21 @@ const togglePackageStatus = async (req, res) => {
   }
 };
 
+const liveSearchPackage = async (req, res) => {
+  try {
+    const regex = new RegExp(req.body.searchkey, "i");
+    const query = { PackageName: regex };
+    const result = await PACKAGES.find(query);
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
 module.exports = {
   getAllPackage,
   addPackage,
   getActivePackages,
   getSinglePackage,
   togglePackageStatus,
+  liveSearchPackage,
 };

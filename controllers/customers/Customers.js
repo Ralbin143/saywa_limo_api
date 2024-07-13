@@ -342,13 +342,26 @@ const adminCustomerList = asyncHandler(async (req, res) => {
 });
 
 const liveSearch = asyncHandler(async (req, res) => {
-  const regex = new RegExp(req.body.searchKey, "i");
+  try {
+    const regex = new RegExp(req.body.searchKey, "i");
 
-  await Customers.find({
-    $or: [{ fullName: regex }, { contact_no: regex }],
-  }).then((response) => {
+    const data = await Customers.find({
+      $or: [{ fullName: regex }, { contact_no: regex }],
+    });
+
+    const dataCount = await Customers.countDocuments({
+      $or: [{ fullName: regex }, { contact_no: regex }],
+    });
+
+    const response = {
+      data: data,
+      total: dataCount,
+    };
+
     return res.status(200).json(response);
-  });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
 });
 
 const liveCustomersCount = asyncHandler(async (req, res) => {
