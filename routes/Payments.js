@@ -114,10 +114,6 @@ router.post("/webhook", async (req, res) => {
 
     const invoiceData = event.data.object.metadata;
 
-    console.log("====================================");
-    console.log(invoiceData);
-    console.log("====================================");
-
     const query = { paymentId: event.data.object.id };
     const data = {
       paymentReference: paymentIntentId,
