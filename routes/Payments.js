@@ -114,6 +114,10 @@ router.post("/webhook", async (req, res) => {
 
     const invoiceData = event.data.object.metadata;
 
+    console.log("====================================");
+    console.log(invoiceData);
+    console.log("====================================");
+
     const query = { paymentId: event.data.object.id };
     const data = {
       paymentReference: paymentIntentId,
@@ -165,6 +169,8 @@ router.post("/webhook", async (req, res) => {
       nightCharge: invoiceData.nightCharge,
       walletAmount: invoiceData.voucherAmount,
       referalCode: invoiceData.voucherCode,
+      returnDate: invoiceData?.returnDate,
+      returnTime: invoiceData?.returnTime,
     });
 
     if (
@@ -225,9 +231,9 @@ router.post("/webhook", async (req, res) => {
       });
 
       const event = {
-        summary: "New Trip",
+        summary: `Saywa - ${tripData?.customerName} - ${vehicleData[0].vehicleName}`,
         location: `${tripData.source}`,
-        description: `<b>New Trip Added by ${tripData.customerName}</b> <p></p><hr/>Phone : <b>${custData[0].contact_no}</b>    \n Pickup:<b> ${tripData.source}</b>  \nDropoff : <b>${tripData.destination}</b> \nVehicle : <b>${vehicleData[0].vehicleName}</b> \n Bags : <b>${tripData.noOfBags}</b> \n Passengers: <b>${tripData.noOfPassengers}</b> \n Notes: <b>${tripData.shortDescription}</b>`,
+        description: `<b>New Trip Added by ${tripData.customerName}</b> <p></p><hr/>Phone : <b>${custData[0].contact_no}</b>    \n Pickup:<b> ${tripData.source}</b>  \nDropoff : <b>${tripData.destination}</b> \nVehicle : <b>${vehicleData[0].vehicleName}</b> \n Bags : <b>${tripData.noOfBags}</b> \n Passengers: <b>${tripData.noOfPassengers}</b> \n Meet and Greet: <b>${tripData.meetAndGreet}</b> \n Notes: <b>${tripData.shortDescription}</b>`,
         start: {
           dateTime: convertedTime,
           timeZone: "America/Los_Angeles",
@@ -260,7 +266,7 @@ router.post("/webhook", async (req, res) => {
             );
             return;
           }
-          console.log(event);
+
           return;
         }
       );

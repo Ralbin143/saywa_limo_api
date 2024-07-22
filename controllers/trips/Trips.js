@@ -13,6 +13,7 @@ const stripe = require("stripe")(process.env.STRIPE_KEY);
 const fs = require("fs");
 const PDFDocument = require("pdfkit");
 const path = require("path");
+const { error } = require("console");
 
 const tripCount = asyncHandler(async (req, res) => {
   const query = { customerId: req.body.customerId };
@@ -109,6 +110,8 @@ const newTripPayment = asyncHandler(async (req, res) => {
         voucherAmount: req.body.voucherAmount,
         voucherCode: req.body.voucherCode,
         walletBalance: req.body.walletBalance,
+        returnDate: req.body.returnDate,
+        returnTime: req.body.returnTime,
       },
       success_url: `${CLIENT_URL}/success?success=true`,
       cancel_url: `${CLIENT_URL}/Reservation`,
@@ -157,6 +160,8 @@ const newTripPayment = asyncHandler(async (req, res) => {
       voucherAmount: req.body.voucherAmount,
       voucherCode: req.body.voucherCode,
       walletBalance: req.body.walletBalance,
+      returnDate: req.body.returnDate,
+      returnTime: req.body.returnTime,
     });
 
     // --------------------[Changed as per client request]--------------------
@@ -228,6 +233,8 @@ const newTrip = asyncHandler(async (req, res) => {
     additionalInfo: req.body.additionalInfo,
     gratuiryTypeCash: req.body.gratuiryTypeCash,
     gratuityAmount: req.body.gratuityAmount,
+    returnDate: req.body.returnDate,
+    returnTime: req.body.returnTime,
   });
   try {
     const newNotification = new Notifications({
@@ -445,6 +452,14 @@ const unAssignedTrips = asyncHandler(async (req, res) => {
         localField: "customerId",
         foreignField: "user_id",
         as: "customerdata",
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "driverId",
+        foreignField: "_id",
+        as: "driver",
       },
     },
 
@@ -1812,59 +1827,64 @@ const filteredTripData = asyncHandler(async (req, res) => {
 });
 
 const updateTripStatus = asyncHandler(async (req, res) => {
-  const query = {
-    _id: req.body.tripId,
-  };
-  const data = {
-    $set: {
-      tripStatus: req.body.status,
-    },
-  };
+  try {
+    const query = {
+      _id: req.body.tripId,
+    };
+    const data = {
+      $set: {
+        tripStatus: req.body.status,
+      },
+    };
 
-  const customer = await Trips.find(query).limit(1);
+    const customer = await Trips.find(query).limit(1);
 
-  const custData = await Customers.find({
-    user_id: customer[0].customerId,
-  }).limit(1);
+    const custData = await Customers.find({
+      user_id: customer[0].customerId,
+    }).limit(1);
 
-  const tripData = await Trips.find({ _id: req.body.tripId });
+    const tripData = await Trips.find({ _id: req.body.tripId });
 
-  if (req.body.status == "Completed") {
-    if (
-      customer[0].referalCode !== null ||
-      customer[0].referalCode !== undefined ||
-      customer[0].referalCode !== ""
-    ) {
-      const custuid = await REFERAL.find({
-        referal_code: customer[0].referalCode,
+    if (req.body.status == "Completed") {
+      const referal = await REFERAL.find({
+        refered_email: custData[0].email,
       });
 
-      console.log(custuid);
+      console.log("====================================");
+      console.log(referal[0]);
+      console.log("====================================");
 
-      await Customers.updateOne(
-        { user_id: custuid[0].user_id },
+      console.log("=================[xxxxxxxxx]===================");
+      const dydy = await Customers.updateOne(
+        { user_id: referal[0].user_id },
         { $set: { $inc: { wallet_balance: 25 } } }
       );
+      console.log(dydy);
+      console.log("===================[xxxxxxxx]=================");
+
+      const ddd = await Customers.updateOne(
+        { user_id: referal[0].user_id },
+        { $inc: { wallet_balance: 25 } }
+      );
+
+      console.log("====================================");
+      console.log(ddd);
+      console.log("====================================");
+
+      await sendEmail(custData[0].email, customer, tripData, custData);
     }
 
-    // sendInvoiceMail();
-    // generateInvoice(custData, tripData);
-
-    await sendEmail(custData[0].email, customer, tripData, custData);
-  } else {
+    // await Trips.updateOne(query, data).then((response) => {
+    //   return res.status(200).json({
+    //     data: response,
+    //   });
+    // });
+  } catch (error) {
+    console.log("====================================");
+    console.log(error);
+    console.log("====================================");
+    return res.status(500).json(error);
   }
-
-  // const invoice = await stripe.invoices.pay(customer[0].invoiceId);
-
-  // const customerStripCustId = await Customers.find({
-  //   user_id: customer[0].customerId,
-  // }).limit(1);
-
-  await Trips.updateOne(query, data).then((response) => {
-    return res.status(200).json({
-      data: response,
-    });
-  });
 });
 
 function generateHr(doc, y) {

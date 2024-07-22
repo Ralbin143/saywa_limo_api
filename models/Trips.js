@@ -140,7 +140,7 @@ const tripSchema = new mongoose.Schema({
     required: false,
   },
   seatCount: {
-    type: String,
+    type: Array,
     required: false,
   },
   additionalInfo: {
@@ -180,6 +180,14 @@ const tripSchema = new mongoose.Schema({
     required: false,
   },
   referalCode: {
+    type: String,
+    required: false,
+  },
+  returnDate: {
+    type: String,
+    required: false,
+  },
+  returnTime: {
     type: String,
     required: false,
   },
