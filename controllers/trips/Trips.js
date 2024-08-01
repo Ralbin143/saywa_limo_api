@@ -58,6 +58,11 @@ const newTripPayment = asyncHandler(async (req, res) => {
     });
 
     // Create a checkout session
+
+    console.log("====================================");
+    console.log(req.body);
+    console.log("====================================");
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -1852,39 +1857,15 @@ const updateTripStatus = asyncHandler(async (req, res) => {
         refered_email: custData[0].email,
       });
 
-      console.log("====================================");
-      console.log(referal[0]);
-      console.log("====================================");
-
-      console.log("=================[xxxxxxxxx]===================");
-      const dydy = await Customers.updateOne(
-        { user_id: referal[0].user_id },
-        { $set: { $inc: { wallet_balance: 25 } } }
-      );
-      console.log(dydy);
-      console.log("===================[xxxxxxxx]=================");
-
-      const ddd = await Customers.updateOne(
-        { user_id: referal[0].user_id },
-        { $inc: { wallet_balance: 25 } }
-      );
-
-      console.log("====================================");
-      console.log(ddd);
-      console.log("====================================");
-
       await sendEmail(custData[0].email, customer, tripData, custData);
     }
 
-    // await Trips.updateOne(query, data).then((response) => {
-    //   return res.status(200).json({
-    //     data: response,
-    //   });
-    // });
+    await Trips.updateOne(query, data).then((response) => {
+      return res.status(200).json({
+        data: response,
+      });
+    });
   } catch (error) {
-    console.log("====================================");
-    console.log(error);
-    console.log("====================================");
     return res.status(500).json(error);
   }
 });
