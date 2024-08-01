@@ -108,7 +108,7 @@ const newTripPayment = asyncHandler(async (req, res) => {
         bagType: req.body.bagType,
         flightInformation: req.body.flightInformation,
         needCarSeat: req.body.needCarSeat,
-        seatCount: req.body.seatCount,
+        seatCount: JSON.stringify(req.body.seatCount),
         additionalInfo: req.body.additionalInfo,
         gratuiryTypeCash: req.body.gratuiryTypeCash,
         gratuityAmount: req.body.gratuityAmount,
