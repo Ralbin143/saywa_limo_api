@@ -12,7 +12,7 @@ const newTrip = asyncHandler(async (req, res) => {
 
   const tripData = new Trips({
     no: tripCount + 1,
-    tripNo: "A" + zeroPad(tripCount + 1, 4),
+    tripNo: zeroPad(tripCount + 1, 4),
     source: req.body.source,
     destination: req.body.destination,
     vehicleId: req.body.vehicleId,
@@ -32,7 +32,7 @@ const newTrip = asyncHandler(async (req, res) => {
 
   const newNotification = new Notifications({
     customerId: req.body.customerId,
-    tripNo: "A" + zeroPad(tripCount + 1, 4),
+    tripNo: zeroPad(tripCount + 1, 4),
     notificationTitle: "New Booking ",
     notificationMessage:
       "New Booking on " + moment(req.body.scheduledDate).format("DD-MM-YYYY"),

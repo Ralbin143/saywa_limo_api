@@ -31,10 +31,11 @@ const addPackage = async (req, res) => {
       TourLength,
     } = req.body;
 
-    console.log(eventType);
-
     let packageData;
-    if (id) {
+
+    if (id !== "null") {
+      console.log("id available");
+
       packageData = await PACKAGES.findByIdAndUpdate(
         id,
         {
@@ -50,6 +51,8 @@ const addPackage = async (req, res) => {
         { new: true }
       );
     } else {
+      console.log("id not available");
+
       packageData = new PACKAGES({
         PackageName,
         PackageImage: images,

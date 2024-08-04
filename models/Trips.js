@@ -163,6 +163,10 @@ const tripSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  wheelChair: {
+    type: String,
+    required: false,
+  },
   tripSource: {
     type: String,
     required: false,

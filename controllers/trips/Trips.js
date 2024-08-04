@@ -26,10 +26,6 @@ const tripCount = asyncHandler(async (req, res) => {
 const newTripPayment = asyncHandler(async (req, res) => {
   const CLIENT_URL = process.env.CLIENT_URL;
 
-  console.log("================[xxxxxxxxxxxxxx]====================");
-  console.log(req.body);
-  console.log("=================[xxxxxxxxxxxxxx]===================");
-
   const zeroPad = (num, places) => String(num).padStart(places, "0");
   const tripCount = (await Trips.find()).length;
 
@@ -40,13 +36,13 @@ const newTripPayment = asyncHandler(async (req, res) => {
       currency: "USD",
 
       metadata: {
-        tripNo: "A" + zeroPad(tripCount + 1, 6),
+        tripNo: zeroPad(tripCount + 1, 6),
         custName: req.body.customerName,
         source: req.body.source,
         destination: req.body.destination,
       },
       product_data: {
-        name: "A" + zeroPad(tripCount + 1, 4),
+        name: zeroPad(tripCount + 1, 4),
       },
     });
 
@@ -75,7 +71,7 @@ const newTripPayment = asyncHandler(async (req, res) => {
       metadata: {
         invoiceId: invoice.id,
         no: tripCount + 1,
-        tripNo: "A" + zeroPad(tripCount + 1, 4),
+        tripNo: zeroPad(tripCount + 1, 4),
         invoiceId: invoice.id,
         source: req.body.source,
         destination: req.body.destination,
@@ -119,6 +115,7 @@ const newTripPayment = asyncHandler(async (req, res) => {
         walletBalance: req.body.walletBalance,
         returnDate: req.body.returnDate,
         returnTime: req.body.returnTime,
+        wheelChair: req.body.wheelChair,
       },
       success_url: `${CLIENT_URL}/success?success=true`,
       cancel_url: `${CLIENT_URL}/Reservation`,
@@ -126,7 +123,7 @@ const newTripPayment = asyncHandler(async (req, res) => {
 
     const tripData = new Trips({
       no: tripCount + 1,
-      tripNo: "A" + zeroPad(tripCount + 1, 4),
+      tripNo: zeroPad(tripCount + 1, 4),
       invoiceId: invoice.id,
       source: req.body.source,
       destination: req.body.destination,
@@ -206,7 +203,7 @@ const newTrip = asyncHandler(async (req, res) => {
 
   const tripData = new Trips({
     no: tripCount + 1,
-    tripNo: "A" + zeroPad(tripCount + 1, 4),
+    tripNo: zeroPad(tripCount + 1, 4),
     source: req.body.source,
     destination: req.body.destination,
     vehicleId: req.body.vehicleId,
@@ -246,7 +243,7 @@ const newTrip = asyncHandler(async (req, res) => {
   try {
     const newNotification = new Notifications({
       customerId: req.body.customerId,
-      tripNo: "A" + zeroPad(tripCount + 1, 4),
+      tripNo: zeroPad(tripCount + 1, 4),
       notificationTitle: "New Booking ",
       notificationMessage:
         "New Booking on " + moment(req.body.scheduledDate).format("DD-MM-YYYY"),
@@ -871,10 +868,7 @@ const updateDriver = asyncHandler(async (req, res) => {
                                                   <strong>Driver Contact:</strong>
                                                   ${driverContactNo}
                                                 </li>
-                                                <li>
-                                                  <strong>Vehicle Number:</strong>
-                                                  ${vehicleNo}
-                                                </li> 
+                                                
                                               </ul>
   
                                               <p style="color: #666666">
@@ -1290,7 +1284,7 @@ const newAdminTrip = asyncHandler(async (req, res) => {
   const tripCount = await (await Trips.find()).length;
   const tripData = new Trips({
     no: tripCount + 1,
-    tripNo: "A" + zeroPad(tripCount + 1, 4),
+    tripNo: zeroPad(tripCount + 1, 4),
     source: req.body.source,
     destination: req.body.destination,
     vehicleId: req.body.vehicleId,
@@ -1367,9 +1361,7 @@ const newAdminTrip = asyncHandler(async (req, res) => {
           tripNo: tripDATA.tripNo,
           // Add more key-value pairs as needed
         },
-        description: `Payment for trip ${
-          "A" + zeroPad(tripCount + 1, 4).toString()
-        }`,
+        description: `Payment for trip ${zeroPad(tripCount + 1, 4).toString()}`,
       });
 
       var userName = tripDATA.customerName;
@@ -1536,9 +1528,10 @@ const newAdminTrip = asyncHandler(async (req, res) => {
                                                   <p style="color: #666666">
                                                     Please note that there is a pending payment of $ ${
                                                       req.body.totalAmount
-                                                    } for trip number ${
-          "A" + zeroPad(tripCount + 1, 4)
-        }. To complete the payment, kindly click the link below:
+                                                    } for trip number ${zeroPad(
+          tripCount + 1,
+          4
+        )}. To complete the payment, kindly click the link below:
     
                                                   </p>
                                                   
@@ -1553,9 +1546,7 @@ const newAdminTrip = asyncHandler(async (req, res) => {
                   </thead>
                   <tbody>
                     <tr>
-                      <td style="width: 20%;">${
-                        "A" + zeroPad(tripCount + 1, 4)
-                      }</td>
+                      <td style="width: 20%;">${zeroPad(tripCount + 1, 4)}</td>
                       <td style="width: 20%;">${req.body.source}</td>
                       <td style="width: 20%;">${req.body.destination}</td>
                       <td style="width: 20%;">${req.body.totalAmount}</td>
@@ -2354,10 +2345,7 @@ async function sendEmail(email, customer, tripData, custData) {
                                                     <td style="text-align:start; padding:10px">Vehicle :
                                                     <td style="text-align:start; padding:10px">Distance
                                                   </tr>
-                                                   <tr style="background:#f0f0f0 ">
-                                                    <td style="text-align:start; padding:10px">Flight Number :
-                                                    <td style="text-align:start; padding:10px">${tripData[0].flightInformation}
-                                                  </tr>
+                                                   
                                                      <tr style="background:#f0f0f0 ">
                                                     <td style="text-align:start; padding:10px">Mobile :
                                                     <td style="text-align:start; padding:10px">${custData[0].contact_no}
@@ -2946,9 +2934,140 @@ const sendPaymentLink = async (req, res) => {
     from: `"Saywa" <${process.env.CONTACT_EMAIL}>`,
     to: req.body.customerdata[0].email,
     subject: "Payment requested",
-    html: `<p style="text-align: left;">Dear ${
-      req.body.customerdata[0].fullName
-    },</p>
+    html: `<table
+        width="100%"
+        id="m_-4521581668634247801outer_wrapper"
+        style="background-color: #f7f7f7"
+        bgcolor="#f7f7f7"
+      >
+        <tbody>
+          <tr>
+            <td></td>
+            <td width="600">
+              <div
+                id="m_-4521581668634247801wrapper"
+                dir="ltr"
+                style="margin: 0 auto; padding: 70px 0; width: 100%; max-width: 600px"
+                width="100%"
+              >
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  height="100%"
+                  width="100%"
+                >
+                  <tbody>
+                    <tr>
+                      <td align="center" valign="top">
+                        <div id="m_-4521581668634247801template_header_image"></div>
+                        <table
+                          border="0"
+                          cellpadding="0"
+                          cellspacing="0"
+                          width="100%"
+                          id="m_-4521581668634247801template_container"
+                          style="
+                            background-color: #fff;
+                            border: 1px solid #dedede;
+                            border-radius: 3px;
+                          "
+                          bgcolor="#fff"
+                        >
+                          <tbody>
+                            <tr>
+                              <td align="center" valign="top">
+                                <table
+                                  border="0"
+                                  cellpadding="0"
+                                  cellspacing="0"
+                                  width="100%"
+                                  id="m_-4521581668634247801template_header"
+                                  style="
+                                    background-color: #000000;
+                                    color: #fff;
+                                    border-bottom: 0;
+                                    font-weight: bold;
+                                    line-height: 100%;
+                                    vertical-align: middle;
+                                    font-family: 'Helvetica Neue', Helvetica, Roboto,
+                                      Arial, sans-serif;
+                                    border-radius: 3px 3px 0 0;
+                                  "
+                                  bgcolor="#0c9991"
+                                >
+                                  <tbody>
+                                    <tr>
+                                      <td
+                                        id="m_-4521581668634247801header_wrapper"
+                                        style="padding: 36px 48px; display: block"
+                                      >
+                                        <h1
+                                          style="
+                                            font-family: 'Helvetica Neue', Helvetica,
+                                              Roboto, Arial, sans-serif;
+                                            font-size: 30px;
+                                            font-weight: 300;
+                                            line-height: 150%;
+                                            margin: 0;
+                                            text-align: left;
+                                            color: #fff;
+                                            background-color: inherit;
+                                          "
+                                          bgcolor="inherit"
+                                        >
+                                          Trip Created by Admin
+                                        </h1>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td align="center" valign="top">
+                                <table
+                                  border="0"
+                                  cellpadding="0"
+                                  cellspacing="0"
+                                  width="100%"
+                                  id="m_-4521581668634247801template_body"
+                                >
+                                  <tbody>
+                                    <tr>
+                                      <td
+                                        valign="top"
+                                        id="m_-4521581668634247801body_content"
+                                        style="background-color: #fff"
+                                        bgcolor="#fff"
+                                      >
+                                        <table
+                                          border="0"
+                                          cellpadding="20"
+                                          cellspacing="0"
+                                          width="100%"
+                                        >
+                                          <tbody>
+                                            <tr>
+                                              <td
+                                                valign="top"
+                                                style="padding: 48px 48px 32px"
+                                              >
+                                                <div
+                                                  id="m_-4521581668634247801body_content_inner"
+                                                  style="
+                                                    color: #636363;
+                                                    font-family: 'Helvetica Neue',
+                                                      Helvetica, Roboto, Arial,
+                                                      sans-serif;
+                                                    font-size: 14px;
+                                                    line-height: 150%;
+                                                    text-align: left;
+                                                  "
+                                                  align="left"
+                                                >
+                                                   <div>
+<p style="text-align: left;">Dear ${req.body.customerdata[0].fullName},</p>
     <p style="text-align: left;">Your documents have been verified. We will assign a driver and send you another email.</p>
     <p style="text-align: left;">You have a pending payment of <strong>$${parseFloat(
       req.body.totalAmount
@@ -2981,7 +3100,31 @@ const sendPaymentLink = async (req, res) => {
       process.env.CONTACT_EMAIL
     }.</p>
     <p>Thank you for your business!</p>
-  </div>`,
+  </div>
+                                                </div>
+                                              </td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+`,
   };
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {

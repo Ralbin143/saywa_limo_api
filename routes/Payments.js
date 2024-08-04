@@ -123,7 +123,7 @@ router.post("/webhook", async (req, res) => {
     const zeroPad = (num, places) => String(num).padStart(places, "0");
     const tripData = new Trips({
       no: tripCount + 1,
-      tripNo: "A" + zeroPad(tripCount + 1, 4),
+      tripNo: zeroPad(tripCount + 1, 4),
       // invoiceId: invoice.id,
       source: invoiceData.source,
       destination: invoiceData.destination,
@@ -156,7 +156,7 @@ router.post("/webhook", async (req, res) => {
       bagType: invoiceData.bagType,
       flightInformation: invoiceData.flightInformation,
       needCarSeat: invoiceData.needCarSeat,
-      seatCount: invoiceData.seatCount,
+      seatCount: JSON.parse(invoiceData.seatCount),
       additionalInfo: invoiceData.additionalInfo,
       gratuiryTypeCash: invoiceData.gratuiryTypeCash,
       gratuityAmount: invoiceData.gratuityAmount,
@@ -167,6 +167,7 @@ router.post("/webhook", async (req, res) => {
       referalCode: invoiceData.voucherCode,
       returnDate: invoiceData?.returnDate,
       returnTime: invoiceData?.returnTime,
+      wheelChair: invoiceData?.wheelChair,
     });
 
     if (
