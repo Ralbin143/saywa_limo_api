@@ -168,6 +168,8 @@ router.post("/webhook", async (req, res) => {
       returnDate: invoiceData?.returnDate,
       returnTime: invoiceData?.returnTime,
       wheelChair: invoiceData?.wheelChair,
+      carryOnBagsCount: invoiceData?.carryOnBagsCount,
+      checkedBagCount: invoiceData?.checkedBagCount,
     });
 
     if (

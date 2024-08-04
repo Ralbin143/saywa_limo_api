@@ -116,6 +116,8 @@ const newTripPayment = asyncHandler(async (req, res) => {
         returnDate: req.body.returnDate,
         returnTime: req.body.returnTime,
         wheelChair: req.body.wheelChair,
+        carryOnBagsCount: req.body.carryOnBagsCount,
+        checkedBagCount: req.body.checkedBagCount,
       },
       success_url: `${CLIENT_URL}/success?success=true`,
       cancel_url: `${CLIENT_URL}/Reservation`,

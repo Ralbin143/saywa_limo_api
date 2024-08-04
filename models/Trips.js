@@ -143,6 +143,14 @@ const tripSchema = new mongoose.Schema({
     type: Array,
     required: false,
   },
+  carryOnBagsCount: {
+    type: String,
+    required: false,
+  },
+  checkedBagCount: {
+    type: String,
+    required: false,
+  },
   additionalInfo: {
     type: String,
     required: false,
