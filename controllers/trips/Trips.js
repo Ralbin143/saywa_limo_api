@@ -1846,6 +1846,63 @@ const updateTripStatus = asyncHandler(async (req, res) => {
     const tripData = await Trips.find({ _id: req.body.tripId });
 
     if (req.body.status == "Completed") {
+      if (customer[0].rideType === "round-trip") {
+        const newTripData = new Trips({
+          no: customer[0].no,
+          tripNo: customer[0].tripNo,
+          invoiceId: customer[0]._id,
+          source: customer[0]?.destination,
+          destination: customer[0]?.source,
+          routeNo: customer[0]?.routeNo,
+          vehicleId: customer[0]?.vehicleId,
+          customerId: customer[0]?.customerId,
+          customerName: customer[0]?.customerName,
+          scheduledDate: customer[0]?.returnDate,
+          scheduleDate: customer[0]?.returnDate,
+          scheduledTime: customer[0]?.returnTime,
+          scheduleTime: customer[0]?.returnTime,
+          shortDescription: customer[0]?.shortDescription,
+          tripStatus: "Pending",
+          totalAmount: parseInt(customer[0]?.totalAmount),
+          totalAmount: 0,
+          paymentStatus: customer[0]?.paymentStatus,
+          // paymentId: session.id,
+          paymentReference: "",
+          paymentMode: customer[0]?.paymentMode,
+          noOfPassengers: customer[0]?.noOfPassengers,
+          noOfBags: customer[0]?.noOfBags,
+          // signature: customer[0]?.signature,
+          // documents: customer[0]?.documents,
+          meetAndGreet: customer[0]?.meetAndGreet,
+          tripOccasion: customer[0]?.tripOccasion,
+          tripOccasionDetails: customer[0]?.tripOccasionDetails,
+          totalKms: customer[0]?.totalKms,
+          stops: JSON.stringify(customer[0]?.stops),
+
+          rideType: "return-trip",
+          totalHours: customer[0]?.totalHours,
+          bagType: customer[0]?.bagType,
+          flightInformation: customer[0]?.flightInformation,
+          needCarSeat: customer[0]?.needCarSeat,
+          seatCount: JSON.stringify(customer[0]?.seatCount),
+          additionalInfo: customer[0]?.additionalInfo,
+          gratuiryTypeCash: customer[0]?.gratuiryTypeCash,
+          gratuityAmount: customer[0]?.gratuityAmount,
+          discount: customer[0]?.discount,
+          nightCharge: customer[0]?.nightCharge,
+          voucherAmount: customer[0]?.voucherAmount,
+          voucherCode: customer[0]?.voucherCode,
+          walletBalance: customer[0]?.walletBalance,
+          returnDate: customer[0]?.returnDate,
+          returnTime: customer[0]?.returnTime,
+          wheelChair: customer[0]?.wheelChair,
+          carryOnBagsCount: customer[0]?.carryOnBagsCount,
+          checkedBagCount: customer[0]?.checkedBagCount,
+        });
+
+        await newTripData.save();
+      }
+
       const referal = await REFERAL.find({
         refered_email: custData[0].email,
       });
@@ -1859,6 +1916,9 @@ const updateTripStatus = asyncHandler(async (req, res) => {
       });
     });
   } catch (error) {
+    console.log("====================================");
+    console.log(error);
+    console.log("====================================");
     return res.status(500).json(error);
   }
 });
